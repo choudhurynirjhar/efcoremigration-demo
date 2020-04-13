@@ -5,8 +5,8 @@ using System.Diagnostics.CodeAnalysis;
 namespace EFCoreMigration.Demo.Migrations
 {
     [DbContext(typeof(EmployeeContext))]
-    [Migration("Migration_02052020101000")]
-    public class Migration_02052020101000 : Migration
+    [Migration("02052020101000_Migration1")]
+    public class Migration1 : Migration
     {
         protected override void Up(
             [NotNullAttribute] MigrationBuilder migrationBuilder)

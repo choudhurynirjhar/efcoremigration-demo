@@ -1,17 +1,13 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace EFCoreMigration.Demo
 {
@@ -30,8 +26,8 @@ namespace EFCoreMigration.Demo
             services.AddControllers();
             services.AddDbContext<EmployeeContext>(
                 ob => ob.UseSqlServer(Configuration["Connection"],
-                sso => sso.MigrationsAssembly(
-                    Assembly.GetExecutingAssembly().GetName().Name)
+                    sso => sso.MigrationsAssembly(
+                        Assembly.GetExecutingAssembly().GetName().Name)
                 ));
         }
 
@@ -57,7 +53,9 @@ namespace EFCoreMigration.Demo
                 endpoints.MapControllers();
             });
 
-            serviceProvider.GetService<EmployeeContext>().Database.Migrate();
+            serviceProvider.GetService<EmployeeContext>()
+                .Database.GetService<IMigrator>()
+                .Migrate(Configuration.GetValue<string>("Migration"));
         }
     }
 }
